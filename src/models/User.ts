@@ -1,18 +1,10 @@
-import type { Document } from "mongoose";
 import { Schema, model } from "mongoose";
 import errMsg from "../utils/errorConstants";
-
-type IUser = Document & {
-  name: string;
-  email: string;
-  password: string;
-  role: "user" | "centralAdmin" | "localAdmin";
-  generateSuccessMessage(): { message: string; user: object };
-};
+import type IUser from "../types/interfaces/IUser";
 
 const UserSchema = new Schema<IUser>(
   {
-    name: { type: String, required: true },
+    username: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     role: {
@@ -20,6 +12,7 @@ const UserSchema = new Schema<IUser>(
       enum: ["user", "centralAdmin", "localAdmin"],
       default: "user",
     },
+    reports: [{ type: Schema.Types.ObjectId, ref: "Report" }],
   },
   { timestamps: true },
 );
