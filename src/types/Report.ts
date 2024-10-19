@@ -9,9 +9,7 @@ export type Answer = {
 export type ReportData = {
   reviewersEmail: string[];
   segment: string;
-  soNumber: string;
-  lhm: string;
-  asmlOffice: string;
+  office: string;
   machineNumber: string;
   timestampCraftsmanship: string;
   hoursDelay: string;

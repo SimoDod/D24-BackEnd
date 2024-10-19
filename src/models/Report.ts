@@ -4,6 +4,9 @@ import type IReport from "../types/interfaces/IReport";
 import User from "./User";
 import validator from "validator";
 
+const getRequredFieldMessage = (requiredField: string) =>
+  `${requiredField} is required`;
+
 const ReportSchema = new Schema<IReport>(
   {
     reviewersEmail: [
@@ -29,27 +32,49 @@ const ReportSchema = new Schema<IReport>(
         },
       },
     ],
-    segment: { type: String, required: true },
-    soNumber: { type: String, required: true },
-    lhm: { type: String, required: true },
-    asmlOffice: { type: String, required: true },
-    machineNumber: { type: String, required: true },
-    timestampCraftsmanship: { type: String, required: true },
-    hoursDelay: { type: String, required: true },
-    techBucket: { type: String, required: true },
-    machineFamily: { type: String, required: true },
-    description: { type: String, required: true },
+    segment: {
+      type: String,
+      required: [true, getRequredFieldMessage("Segment")],
+    },
+    office: {
+      type: String,
+      required: [true, getRequredFieldMessage("Office")],
+    },
+    machineNumber: {
+      type: String,
+      required: [true, getRequredFieldMessage("Machine Number")],
+    },
+    timestampCraftsmanship: {
+      type: String,
+      required: [true, getRequredFieldMessage("Time of Craftsmanship")],
+    },
+    hoursDelay: {
+      type: String,
+      required: [true, getRequredFieldMessage("Hours Delay")],
+    },
+    techBucket: {
+      type: String,
+      required: [true, getRequredFieldMessage("Tech Bucket")],
+    },
+    machineFamily: {
+      type: String,
+      required: [true, getRequredFieldMessage("Machine Family")],
+    },
+    description: {
+      type: String,
+      required: [true, getRequredFieldMessage("Descirption")],
+    },
     mealTime: { type: Boolean, default: false },
     continuousWork: { type: Boolean, default: false },
     experienced: { type: Boolean, default: false },
     gotTraining: { type: Boolean, default: false },
     customerInterference: { type: Boolean, default: false },
     workAlone: { type: Boolean, default: false },
-    background: { type: String, required: true },
-    myselInfluence: { type: String, required: true },
-    riskReduceDescription: { type: String, required: true },
-    teamInfluence: { type: String, required: true },
-    managerInfluence: { type: String, required: true },
+    background: { type: String, required: false },
+    myselInfluence: { type: String, required: false },
+    riskReduceDescription: { type: String, required: false },
+    teamInfluence: { type: String, required: false },
+    managerInfluence: { type: String, required: false },
     status: {
       type: String,
       enum: Object.values(ReportStatus),

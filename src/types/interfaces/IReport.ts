@@ -5,9 +5,7 @@ import type IUser from "./IUser";
 type IReport = {
   reviewersEmail: Types.ObjectId[];
   segment: string;
-  soNumber: string;
-  lhm: string;
-  asmlOffice: string;
+  office: string;
   machineNumber: string;
   timestampCraftsmanship: string;
   hoursDelay: string;

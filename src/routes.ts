@@ -6,7 +6,7 @@ import reportController from "./controllers/reportController.js";
 import delayResponse from "./middlewares/delayResponse.js";
 
 const router = Router();
-const delayResponseMs = 600; // Simulate slow satellite internet speed
+const delayResponseMs = 0; // Simulate slow satellite internet speed
 
 router.use("/auth", delayResponse(delayResponseMs), authController);
 router.use(
