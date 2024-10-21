@@ -16,7 +16,7 @@ const errorHandler = (
 
     return res.status(400).json({
       error: `${errMsg.duplicateValue} ${field}`,
-      message: `${errMsg.mustBeUnique} ${field} `,
+      message: `${errMsg.duplicateValue} ${field} `,
     });
   }
 

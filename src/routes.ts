@@ -1,6 +1,7 @@
 import { Router } from "express";
 import authController from "./controllers/authController.js";
 import adminsController from "./controllers/adminsController.js";
+import maintenanceController from "./controllers/maintenanceController.js";
 import verifyToken from "./middlewares/verifyToken.js";
 import reportController from "./controllers/reportController.js";
 import delayResponse from "./middlewares/delayResponse.js";
@@ -15,6 +16,11 @@ router.use(
   verifyToken,
   reportController,
 );
-router.use(delayResponse(delayResponseMs), adminsController);
+router.use(delayResponse(delayResponseMs), verifyToken, adminsController);
+router.use(
+  "/maintenance",
+  delayResponse(delayResponseMs),
+  maintenanceController,
+);
 
 export default router;
