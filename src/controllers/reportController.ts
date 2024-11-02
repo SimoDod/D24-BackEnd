@@ -12,7 +12,7 @@ router.get(
   async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
       const reportNumber = req.params.reportNumber;
-
+      
       if (!reportNumber) {
         return res.status(400).json({ message: errMsg.notFound });
       }

@@ -17,6 +17,8 @@ const errMsg = {
   reportSubmitFail: "Submitting of report failed",
   duplicate: "Duplicate",
   officeNotFound: "Office not found",
+  segmentNotFound: "Segment not found",
+  techBucketNotFound: "Tech Bucket not found",
 } as const;
 
 export default errMsg;

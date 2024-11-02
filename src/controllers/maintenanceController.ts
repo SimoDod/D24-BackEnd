@@ -24,8 +24,10 @@ router.get(
 router.post(
   "/create-office",
   async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+    const { name } = req.body;
+
     try {
-      const office = await Office.create(req.body);
+      const office = await Office.create({ name });
 
       return res.status(201).json(office);
     } catch (error) {
@@ -47,7 +49,7 @@ router.put(
       );
 
       if (!office) {
-        return res.status(404).json({ message: "Office not found" });
+        return res.status(404).json({ message: errMsg.officeNotFound });
       }
 
       return res.status(200).json(office);
@@ -60,8 +62,10 @@ router.put(
 router.delete(
   "/delete-office/:id",
   async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+    const officeId = req.params.id;
+
     try {
-      const office = await Office.findByIdAndDelete(req.params.id);
+      const office = await Office.findByIdAndDelete(officeId);
 
       if (!office) {
         return res.status(404).json({ message: errMsg.officeNotFound });
@@ -89,6 +93,26 @@ router.get(
   },
 );
 
+router.post(
+  "/create-segment",
+  async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+    const { selectedTechBuckets, name } = req.body;
+
+    try {
+      const segment = await Segment.create({
+        selectedTechBuckets,
+        name,
+      });
+
+      const pupulatedSegment = await segment.populate("selectedTechBuckets");
+
+      return res.status(201).json(pupulatedSegment);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
 router.put(
   "/update-segment/:segmentId",
   async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
@@ -108,7 +132,26 @@ router.put(
       }).populate("selectedTechBuckets");
 
       if (!segment) {
-        return res.status(404).json({ message: "Segment not found" });
+        return res.status(404).json({ message: errMsg.segmentNotFound });
+      }
+
+      return res.status(200).json(segment);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+router.delete(
+  "/delete-segment/:id",
+  async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+    const segmentId = req.params.id;
+
+    try {
+      const segment = await Segment.findByIdAndDelete(segmentId);
+
+      if (!segment) {
+        return res.status(404).json({ message: errMsg.segmentNotFound });
       }
 
       return res.status(200).json(segment);
@@ -125,6 +168,64 @@ router.get(
       const techBuckets = await TechBucket.find().lean();
 
       return res.status(200).json(techBuckets);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+router.post(
+  "/create-techBucket",
+  async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+    const { name } = req.body;
+
+    try {
+      const techBucket = await TechBucket.create({ name });
+
+      return res.status(201).json(techBucket);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+router.put(
+  "/update-techBucket",
+  async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+    const { name } = req.body;
+    const id = req.body.id;
+
+    try {
+      const techBucket = await TechBucket.findByIdAndUpdate(
+        id,
+        { name },
+        { new: true, runValidators: true },
+      );
+
+      if (!techBucket) {
+        return res.status(404).json({ message: errMsg.techBucketNotFound });
+      }
+
+      return res.status(200).json(techBucket);
+    } catch (error) {
+      next(error);
+    }
+  },
+);
+
+router.delete(
+  "/delete-techBucket/:id",
+  async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+    const techBucketId = req.params.id;
+
+    try {
+      const techBucket = await TechBucket.findByIdAndDelete(techBucketId);
+
+      if (!techBucket) {
+        return res.status(404).json({ message: errMsg.techBucketNotFound });
+      }
+
+      return res.status(200).json(techBucket);
     } catch (error) {
       next(error);
     }
