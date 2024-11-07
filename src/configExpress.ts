@@ -20,9 +20,9 @@ const configExpress = (app: Application) => {
   app.use(bodyParser.json());
   app.use(e.static(path.join(__dirname, "../dist")));
   app.use("/api", routes);
-  app.get("*", (req, res) => {
+  /* app.get("*", (req, res) => {
     res.sendFile(path.resolve(__dirname, "../dist", "index.html"));
-  });
+  }); */
   app.use(errorHandler);
 
   return app;
