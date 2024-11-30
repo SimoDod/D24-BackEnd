@@ -2,13 +2,13 @@
   "compilerOptions": {
   "target": "ES6",
   "module": "ESNext",
-  "outDir": "./dist",
+  "outDir": "dist",
   "strict": true,
   "esModuleInterop": true,
   "skipLibCheck": true,
   "forceConsistentCasingInFileNames": true,
   "moduleResolution": "node",
 },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "dist", "index.ts", "src/routes.ts", "src/configExpress.ts"],
   "exclude": ["node_modules"]
 }

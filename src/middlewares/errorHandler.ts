@@ -1,16 +1,22 @@
-import type { Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 import mongoose from "mongoose";
 import errMsg from "../utils/errorConstants";
 import type { MongoError } from "../types/MongoError";
 
-const errorHandler = (err: MongoError, req: Request, res: Response) => {
+const errorHandler = (
+  err: MongoError,
+  _req: Request,
+  res: Response,
+  _next: NextFunction,
+) => {
+
   // Duplicate key error (MongoDB code 11000)
   if (err.code === 11000 && err.keyValue) {
     const field = Object.keys(err.keyValue)[0];
 
     return res.status(400).json({
       error: `${errMsg.duplicateValue} ${field}`,
-      message: `${errMsg.mustBeUnique} ${field} `,
+      message: `${errMsg.duplicateValue} ${field} `,
     });
   }
 
@@ -23,6 +29,14 @@ const errorHandler = (err: MongoError, req: Request, res: Response) => {
     return res.status(400).json({
       error: errMsg.validationError,
       details: messages,
+    });
+  }
+
+  // Invalid credentials
+  if (err.message === errMsg.invalidCredentials) {
+    return res.status(401).json({
+      error: errMsg.somethingWrong,
+      message: errMsg.invalidCredentials,
     });
   }
 

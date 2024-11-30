@@ -3,33 +3,42 @@ import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import errMsg from "../utils/errorConstants.js";
 
-const jwtSecret = process.env.JWT_SECRET;
-
 export const registerUser = async (
-  name: string,
+  username: string,
   email: string,
   password: string,
-): Promise<{ message: string }> => {
+) => {
+  if (!process.env.JWT_SECRET) {
+    throw new Error(errMsg.failAcquireToken);
+  }
+
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
 
   const newUser = new User({
-    name,
+    username,
     email,
     password: hashedPassword,
   });
 
-  await newUser.save();
+  const user = await newUser.save();
 
-  return newUser.generateSuccessMessage();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { password: userPassword, ...safeUserData } = user;
+
+  const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+    expiresIn: "1h",
+  });
+
+  return { token, user: safeUserData };
 };
 
 export const loginUser = async (email: string, password: string) => {
-  if (!jwtSecret) {
+  if (!process.env.JWT_SECRET) {
     throw new Error(errMsg.failAcquireToken);
   }
 
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email }).lean();
 
   if (!user) {
     throw new Error(errMsg.invalidCredentials);
@@ -41,9 +50,15 @@ export const loginUser = async (email: string, password: string) => {
     throw new Error(errMsg.invalidCredentials);
   }
 
-  const token = jwt.sign({ userId: user._id }, jwtSecret, {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { password: userPassword, ...safeUserData } = user;
+
+  const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
     expiresIn: "1h",
   });
 
-  return { token };
+  return { token, user: safeUserData };
 };
+
+export const findUserById = async (userId: string) =>
+  await User.findById(userId).select("-password");
